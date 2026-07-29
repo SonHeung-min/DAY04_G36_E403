@@ -1,7 +1,213 @@
 {
   "dataset_id": "day04_v2_research_group",
   "dataset_role": "group",
-  "description": "Template để NHÓM tự viết đúng 10 case: 5 single-turn dùng query và 5 multi-turn dùng turns. Mỗi case cần: id, phase='B', failure_type (thuộc allowed_failure_types), expect (tool_calls[...] hoặc no_tool=true), và metadata.what_it_tests. File để trống có chủ đích vì mỗi nhóm phải tự thiết kế các case này.",
+  "description": "Team-authored eval set: exactly 10 cases, 5 single-turn and 5 multi-turn, focused on source checking, routing boundaries, and carryover behavior.",
   "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
-  "cases": []
+  "cases": [
+    {
+      "id": "G01_source_check_citation_urls",
+      "phase": "B",
+      "query": "Kiem tra giup minh hai nguon nay co phu hop de trich dan khong: https://openai.com/research va https://medium.com/some-ai-post",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "source_check",
+            "args": {
+              "purpose": "citation"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Single-turn: source/citation suitability with explicit URLs should route to the new source_check tool."
+      }
+    },
+    {
+      "id": "G02_source_check_publishing",
+      "phase": "B",
+      "query": "Truoc khi public digest, danh gia link https://reddit.com/r/MachineLearning/comments/example co on lam nguon chinh khong",
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "source_check",
+            "args": {
+              "purpose": "publishing"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Single-turn: public/publishing intent should set purpose=publishing, not generic research."
+      }
+    },
+    {
+      "id": "G03_fetch_not_source_check",
+      "phase": "B",
+      "query": "Doc va tom tat noi dung link nay: https://example.com/report",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.com/report"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Single-turn: a request to read/summarize URL content should use fetch, not source_check."
+      }
+    },
+    {
+      "id": "G04_missing_source_url",
+      "phase": "B",
+      "query": "Kiem tra nguon nay co dang tin de trich dan khong",
+      "failure_type": "missing_info",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {}
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Single-turn: source review without a URL should ask for the URL instead of guessing."
+      }
+    },
+    {
+      "id": "G05_action_send_confirmation",
+      "phase": "B",
+      "query": "Gui ngay ban tom tat nay len Telegram: AI digest da xong",
+      "failure_type": "wrong_boundary",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Single-turn: side-effect action must request yes/no confirmation before send."
+      }
+    },
+    {
+      "id": "G06_multiturn_source_url_fill",
+      "phase": "B",
+      "turns": [
+        {"role": "user", "content": "Minh can kiem tra nguon de dua vao citation"},
+        {"role": "user", "content": "Nguon la https://arxiv.org/abs/1706.03762"},
+        {"role": "user", "content": "Kiem tra dung link do cho citation nhe"}
+      ],
+      "failure_type": "missing_info",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "source_check",
+            "args": {
+              "purpose": "citation"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Multi-turn: fill missing URL from earlier turn and preserve citation purpose."
+      }
+    },
+    {
+      "id": "G07_multiturn_switch_fetch_to_source_check",
+      "phase": "B",
+      "turns": [
+        {"role": "user", "content": "Tom tat bai nay: https://openai.com/research/index"},
+        {"role": "user", "content": "Khoan, dung tom tat nua"},
+        {"role": "user", "content": "Chi kiem tra link do co on lam nguon research khong"}
+      ],
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "source_check",
+            "args": {
+              "purpose": "research"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Multi-turn: latest turn switches from reading content to source suitability review."
+      }
+    },
+    {
+      "id": "G08_multiturn_carry_news_timeframe",
+      "phase": "B",
+      "turns": [
+        {"role": "user", "content": "Tim tin AI hom nay"},
+        {"role": "user", "content": "Chuyen chu de sang chip NVIDIA"},
+        {"role": "user", "content": "Van lay tin hom nay"}
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+              "args": {
+              "query": "NVIDIA chip news",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Multi-turn: carry timeframe=today while applying the corrected topic."
+      }
+    },
+    {
+      "id": "G09_multiturn_meta_no_tool",
+      "phase": "B",
+      "turns": [
+        {"role": "user", "content": "Tim cac tweet top ve GPT-5"},
+        {"role": "user", "content": "Khong can tim nua"},
+        {"role": "user", "content": "Noi ngan gon ban co nhung tool nao"}
+      ],
+      "failure_type": "unnecessary_tool",
+      "expect": {
+        "no_tool": true,
+        "behavior": "answer_without_tool"
+      },
+      "metadata": {
+        "what_it_tests": "Multi-turn: latest meta question should be answered without calling the earlier requested social_search."
+      }
+    },
+    {
+      "id": "G10_multiturn_send_after_confirmation",
+      "phase": "B",
+      "turns": [
+        {"role": "user", "content": "Gui ban tin AI digest len Telegram giup minh"},
+        {"role": "assistant", "content": "Ban xac nhan muon gui len Telegram khong?"},
+        {"role": "user", "content": "Co, gui noi dung: AI digest da san sang"}
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "send",
+            "args": {
+              "text": "AI digest da san sang",
+              "confirmed": true
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Multi-turn: after explicit confirmation, the agent may call send with confirmed=true."
+      }
+    }
+  ]
 }
