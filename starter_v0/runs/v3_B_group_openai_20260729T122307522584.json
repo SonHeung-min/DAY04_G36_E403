@@ -1,0 +1,725 @@
+{
+  "run_id": "v3_B_group_openai_20260729T122307522584",
+  "version": "v3",
+  "artifact_version": "v3+p645e63f5f341+t5700740ddc78",
+  "prompt_hash": "645e63f5f341a3f73328fb2aaaa1d5306978e4cb33419c90de07182f188ddb0e",
+  "tools_hash": "5700740ddc78c66acd66579d06844b7aa149c835b6dbcb6f61c5e887cd28b2ef",
+  "phase": "B",
+  "suite": "group",
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "system_prompt": "C:\\Users\\Admin\\Desktop\\AITHUCCHIEN\\LABS\\DAY04_2A202601327_OngXuanSon\\starter_v0\\artifacts\\system_prompt.md",
+  "tools": "C:\\Users\\Admin\\Desktop\\AITHUCCHIEN\\LABS\\DAY04_2A202601327_OngXuanSon\\starter_v0\\artifacts\\tools.yaml",
+  "eval_cases": "data\\eval_group.json",
+  "dataset_id": "day04_v2_research_group",
+  "dataset_role": "group",
+  "description": "Team-authored eval set: exactly 10 cases, 5 single-turn and 5 multi-turn, focused on claim checking, routing boundaries, and carryover behavior.",
+  "generated_at": "2026-07-29T12:23:07",
+  "summary": {
+    "total_cases": 10,
+    "measured_cases": 10,
+    "provider_error_cases": 0,
+    "passed_cases": 10,
+    "case_accuracy": 1.0,
+    "tool_routing_accuracy": 1.0,
+    "argument_accuracy": 1.0,
+    "multiturn_accuracy": 1.0,
+    "failure_counts": {},
+    "observed_mismatch_counts": {}
+  },
+  "results": [
+    {
+      "id": "G01_claim_check_scientific",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Single-turn: scientific claim triage should route to the new claim_check tool."
+      },
+      "input": "Danh gia claim nay co can kiem chung khong: Transformer tot hon RNN cho dich may trong hau het benchmark khoa hoc.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "claim_check",
+            "args": {
+              "domain": "scientific"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "claim_check",
+            "args": {
+              "claim": "Transformer tot hon RNN cho dich may trong hau het benchmark khoa hoc",
+              "domain": "scientific"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "claim_check",
+          "args": {
+            "claim": "Transformer tot hon RNN cho dich may trong hau het benchmark khoa hoc",
+            "domain": "scientific"
+          },
+          "result": {
+            "tool": "claim_check",
+            "error": null,
+            "claim": "Transformer tot hon RNN cho dich may trong hau het benchmark khoa hoc",
+            "domain": "scientific",
+            "urgency": "normal",
+            "risk_level": "medium",
+            "verification_need": "normal",
+            "recommended_tools": [
+              "papers",
+              "paper_text"
+            ],
+            "evidence_needed": [
+              "peer-reviewed paper or preprint",
+              "method/sample details",
+              "independent replication or expert commentary"
+            ],
+            "search_queries": [
+              "Transformer tot hon RNN cho dich may trong hau het benchmark khoa hoc"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G02_claim_check_current_events",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Single-turn: urgent current-events claim should set domain=current_events and urgency=high."
+      },
+      "input": "Claim nay dang viral va can check gap: OpenAI vua cong bo model moi hom nay.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "claim_check",
+            "args": {
+              "domain": "current_events",
+              "urgency": "high"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "claim_check",
+            "args": {
+              "claim": "OpenAI vua cong bo model moi hom nay.",
+              "domain": "current_events",
+              "urgency": "high"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "claim_check",
+          "args": {
+            "claim": "OpenAI vua cong bo model moi hom nay.",
+            "domain": "current_events",
+            "urgency": "high"
+          },
+          "result": {
+            "tool": "claim_check",
+            "error": null,
+            "claim": "OpenAI vua cong bo model moi hom nay.",
+            "domain": "current_events",
+            "urgency": "high",
+            "risk_level": "high",
+            "verification_need": "high",
+            "recommended_tools": [
+              "lookup"
+            ],
+            "evidence_needed": [
+              "recent primary source",
+              "independent reputable news source",
+              "publication date"
+            ],
+            "search_queries": [
+              "OpenAI vua cong bo model moi hom nay."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G03_fetch_not_claim_check",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Single-turn: a request to read/summarize URL content should use fetch, not claim_check."
+      },
+      "input": "Doc va tom tat noi dung link nay: https://example.com/report",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.com/report"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.com/report"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "fetch",
+          "args": {
+            "url": "https://example.com/report"
+          },
+          "result": {
+            "tool": "read_url",
+            "url": "https://example.com/report",
+            "items": [
+              {
+                "title": "Example Domain",
+                "url": "https://example.com/report",
+                "source": "example.com",
+                "summary": "# Example Domain\n\nThis domain is for use in documentation examples without needing permission. Avoid use in operations.\n\n[Learn more](https://iana.org/domains/example)"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G04_missing_claim",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Single-turn: claim review without the actual claim should ask for the missing claim instead of guessing."
+      },
+      "input": "Kiem tra claim nay co dang tin khong",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Vui lòng cung cấp nội dung của claim mà bạn muốn kiểm tra.",
+              "response_type": "text"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Vui lòng cung cấp nội dung của claim mà bạn muốn kiểm tra.",
+            "response_type": "text"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Vui lòng cung cấp nội dung của claim mà bạn muốn kiểm tra.",
+            "response_type": "text",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "G05_action_send_confirmation",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Single-turn: side-effect action must request yes/no confirmation before send."
+      },
+      "input": "Gui ngay ban tom tat nay len Telegram: AI digest da xong",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "response_type": "yes_no"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "",
+            "response_type": "yes_no",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "G06_multiturn_claim_fill",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Multi-turn: fill missing claim from earlier turn and preserve scientific domain."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Minh can kiem tra mot claim khoa hoc"
+        },
+        {
+          "role": "user",
+          "content": "Claim la attention is all you need da thay doi cach xay dung mo hinh ngon ngu"
+        },
+        {
+          "role": "user",
+          "content": "Kiem tra dung claim do theo huong scientific nhe"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "claim_check",
+            "args": {
+              "domain": "scientific"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "claim_check",
+            "args": {
+              "claim": "attention is all you need da thay doi cach xay dung mo hinh ngon ngu",
+              "domain": "scientific"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "claim_check",
+          "args": {
+            "claim": "attention is all you need da thay doi cach xay dung mo hinh ngon ngu",
+            "domain": "scientific"
+          },
+          "result": {
+            "tool": "claim_check",
+            "error": null,
+            "claim": "attention is all you need da thay doi cach xay dung mo hinh ngon ngu",
+            "domain": "scientific",
+            "urgency": "normal",
+            "risk_level": "medium",
+            "verification_need": "normal",
+            "recommended_tools": [
+              "papers",
+              "paper_text"
+            ],
+            "evidence_needed": [
+              "peer-reviewed paper or preprint",
+              "method/sample details",
+              "independent replication or expert commentary"
+            ],
+            "search_queries": [
+              "attention is all you need da thay doi cach xay dung mo hinh ngon ngu"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G07_multiturn_switch_fetch_to_claim_check",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Multi-turn: latest turn switches from reading content to current-events claim triage."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tom tat bai nay: https://openai.com/research/index"
+        },
+        {
+          "role": "user",
+          "content": "Khoan, dung tom tat nua"
+        },
+        {
+          "role": "user",
+          "content": "Chi danh gia claim OpenAI vua cong bo model moi hom nay co can verify khong"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "claim_check",
+            "args": {
+              "domain": "current_events"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "claim_check",
+            "args": {
+              "claim": "OpenAI vừa công bố model mới hôm nay",
+              "domain": "current_events",
+              "urgency": "high"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "claim_check",
+          "args": {
+            "claim": "OpenAI vừa công bố model mới hôm nay",
+            "domain": "current_events",
+            "urgency": "high"
+          },
+          "result": {
+            "tool": "claim_check",
+            "error": null,
+            "claim": "OpenAI vừa công bố model mới hôm nay",
+            "domain": "current_events",
+            "urgency": "high",
+            "risk_level": "high",
+            "verification_need": "high",
+            "recommended_tools": [
+              "lookup"
+            ],
+            "evidence_needed": [
+              "recent primary source",
+              "independent reputable news source",
+              "publication date"
+            ],
+            "search_queries": [
+              "OpenAI vừa công bố model mới hôm nay"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G08_multiturn_carry_news_timeframe",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Multi-turn: carry timeframe=today while applying the corrected topic."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tim tin AI hom nay"
+        },
+        {
+          "role": "user",
+          "content": "Chuyen chu de sang chip NVIDIA"
+        },
+        {
+          "role": "user",
+          "content": "Van lay tin hom nay"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "NVIDIA chip news",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "NVIDIA chip news",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "NVIDIA chip news",
+            "topic": "news",
+            "timeframe": "day"
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "NVIDIA chip news",
+            "topic": "news",
+            "timeframe": "day",
+            "items": [
+              {
+                "title": "Scoop: Nvidia's Jensen Huang meets Lutnick amid China scrutiny - Axios",
+                "url": "https://www.axios.com/2026/07/28/nvidia-jensen-huang-lutnick-meeting-china-ai",
+                "source": "axios.com",
+                "summary": "# Scoop: Nvidia's Jensen Huang meets Lutnick amid China scrutiny. Nvidia CEO Jensen Huang met Tuesday with Commerce Secretary Howard Lutnick as the Trump administration investigates potential violations involving Nvidia chip exports to China, according to a source familiar. **Why it matters:** Huang is in Washington as the Trump administration finalizes a framework that would give the government early access to the most advanced AI models before their release. **Driving the news:** Huang is holding meetings across Washington this week, including with Sen. Mark Warner (D-Va.), the top Democrat on the Intelligence Committee, and other members of Congress from both sides of the aisle. \"meet with leaders on both sides of the aisle to discuss NVIDIA's work to strengthen the country's supply chain by producing $500B in American technology over four years and American leadership in AI, including leading in open source.\". **Context:** A Commerce Department's Bureau of Industry and Security spokespersontold Axios last week that it's investigating potential Nvidia Blackwell chip export violations.",
+                "score": 0.6989468
+              },
+              {
+                "title": "Taiwan detains Nvidia employee in Super Micro probe, Taiwan media says - Reuters",
+                "url": "https://www.reuters.com/world/asia-pacific/taiwan-detains-nvidia-employee-super-micro-probe-taiwan-media-says-2026-07-28/",
+                "source": "reuters.com",
+                "summary": "Exclusive news, data and analytics for financial market professionals Learn more about Refinitiv. ## Browse World. ## Browse Business. ## Browse Markets. TAIPEI, July 28 (Reuters) - Taiwan prosecutors detained a Nvidia (NVDA.O), opens new tab employee as part of a probe into alleged illegal exports of Super Micro (SMCI.O), opens new tab AI servers ​to China, Taiwan's local media reported. In May, Taiwanese prosecutors launched the first round, opens new tab, detaining three people suspected of illegally exporting Super Micro's high-end AI servers equipped with restricted ​Nvidia chips to ​China. In March, the U.S. Justice Department charged, opens new tabthree people associated ​with Super Micro, including one of its co-founders, with helping ​smuggle at ⁠least $2.5 billion worth of U.S. AI technology to China in violation of U.S. export controls. *   #### World-Check, opens new tab. *   Media Center, opens new tab. *   Reuters News Agency, opens new tab. *   Reuters and AI, opens new tab.",
+                "score": 0.6222074
+              },
+              {
+                "title": "Nvidia Slides as AI Spending Fears Hit Chip Stocks - Yahoo Finance",
+                "url": "https://finance.yahoo.com/technology/ai/articles/nvidia-slides-ai-spending-fears-122828811.html",
+                "source": "finance.yahoo.com",
+                "summary": "3. Most active penny stocks. 2. Best 0% APR cards. 3. Best balance transfer cards. 2. Best high-yield savings accounts. 3. Best money market accounts. 4. Best free checking accounts. 3. How to get approved. # Nvidia Slides as AI Spending Fears Hit Chip Stocks. Nvidia (NVDA, Financials), the semiconductor company best known for artificial intelligence chips, fell 5% Monday as investors questioned the funding structure behind the AI infrastructure boom. GuruFocus has detected 3 Warning Signs with NVDA. The decline followed a report that Nvidia was discussing about $250 billion in financing guarantees for an OpenAI data center. Separate talks reportedly involved financing up to $350 billion in OpenAI chip purchases. China's progress in chip equipment and the strong market debut of memory producer CXMT added to fears that established semiconductor leaders could face tougher competition. The market reaction comes before earnings from Apple, Meta, Microsoft and Amazon, which could offer clearer signals on future AI infrastructure spending.",
+                "score": 0.5993685
+              },
+              {
+                "title": "Micron, SK Hynix stocks sink as AI chip sell-off deepens - Yahoo Finance",
+                "url": "https://finance.yahoo.com/markets/article/micron-sk-hynix-stocks-sink-as-ai-chip-sell-off-deepens-125622548.html",
+                "source": "finance.yahoo.com",
+                "summary": "2. Best 0% APR cards. 2. Best high-yield savings accounts. 3. Best money market accounts. **What happened:**Semiconductor stocks accelerated losses on Tuesday, with the PHLX Semiconductor Index (^SOX) falling more than 5% as investors continued to unwind positions in one of the market's hottest AI-driven sectors this year. AI chip heavyweight Nvidia (NVDA) stock fell roughly 1%, adding to a 5% loss on Monday, while AMD (AMD) fell more than 8%. On Monday, Nvidia lost its position as the world's most valuable company to Apple after a report said the AI chip heavyweight was in talks to backstop $250 billion in funding for OpenAI (OPAI.PVT) tied to a major data center project. **What else you need to know:** Semiconductor stocks have been at the center of the AI trade this year, helping propel the sector to a record high in June. *Ines Ferre is a senior business reporter for Yahoo Finance. **Read the latest financial and business news from Yahoo Finance**.",
+                "score": 0.5968332
+              },
+              {
+                "title": "Nvidia employee detained in Taiwan's AI chip smuggling probe - PC Gamer",
+                "url": "https://www.pcgamer.com/hardware/taiwanese-authorities-detain-nvidia-employee-for-alleged-attempt-to-smuggle-ai-chips-into-china/",
+                "source": "pcgamer.com",
+                "summary": "See the latest gaming news first. For the quickest way to join, simply enter your email below and get access. We will send a confirmation and sign you up to our newsletter to keep you updated on all your gaming news. By submitting your information you agree to the Terms & Conditions and Privacy Policy and are aged 16 or over. Enter your email below and we'll send confirmation, and sign you up to our newsletter. By submitting your information, you confirm you are aged 16 or over, have read our Privacy Policy and agree to the Terms & Conditions. News and reviews of the latest PC hardware. Get the biggest gaming news, reviews, and releases straight to your inbox. Keep up to date with the most important stories and the best deals, as picked by the PC Gamer team. Chang's detainment was carried out as part of a larger investigation into the alleged smuggling of AI chips into China.",
+                "score": 0.5852203
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G09_multiturn_meta_no_tool",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Multi-turn: latest meta question should be answered without calling the earlier requested social_search."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tim cac tweet top ve GPT-5"
+        },
+        {
+          "role": "user",
+          "content": "Khong can tim nua"
+        },
+        {
+          "role": "user",
+          "content": "Noi ngan gon ban co nhung tool nao"
+        }
+      ],
+      "expect": {
+        "no_tool": true,
+        "behavior": "answer_without_tool"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Tôi có thể giúp bạn với các công cụ sau:\n\n1. **Tìm kiếm thông tin trên mạng**: Tra cứu thông tin, tin tức, hoặc bài viết.\n2. **Lấy các bài đăng gần đây**: Xem các tweet hoặc bài đăng mới từ một tài khoản cụ thể.\n3. **Tìm kiếm trên mạng xã hội**: Tìm các bài viết hoặc thảo luận liên quan đến một từ khóa cụ thể.\n4. **Kiểm tra thông tin**: Đánh giá tính xác thực của một tuyên bố hoặc thông tin cụ thể.\n5. **Lấy nội dung từ một địa chỉ**: Đọc và tóm tắt nội dung từ một URL cụ thể.\n6. **Trình bày dữ liệu**: Định dạng và trình bày thông tin theo các mẫu khác nhau.\n\nNếu bạn cần thêm thông tin hoặc có yêu cầu cụ thể, hãy cho tôi biết!",
+        "case_failure_type": "unnecessary_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "G10_multiturn_send_after_confirmation",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Multi-turn: after explicit confirmation, the agent may call send with confirmed=true."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Gui ban tin AI digest len Telegram giup minh"
+        },
+        {
+          "role": "assistant",
+          "content": "Ban xac nhan muon gui len Telegram khong?"
+        },
+        {
+          "role": "user",
+          "content": "Co, gui noi dung: AI digest da san sang"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "send",
+            "args": {
+              "text": "AI digest da san sang",
+              "confirmed": true
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "send",
+            "args": {
+              "text": "AI digest da san sang",
+              "confirmed": true
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "send",
+          "args": {
+            "text": "AI digest da san sang",
+            "confirmed": true
+          },
+          "result": {
+            "tool": "send_telegram",
+            "error": "RuntimeError",
+            "message": "Missing TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID env var"
+          }
+        }
+      ]
+    }
+  ]
+}

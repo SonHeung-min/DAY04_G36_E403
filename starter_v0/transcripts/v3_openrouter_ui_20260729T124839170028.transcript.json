@@ -1,0 +1,28 @@
+{
+  "transcript_id": "ui_20260729T124839170028",
+  "version": "v3",
+  "artifact_version": "v3+p645e63f5f341+t5700740ddc78",
+  "prompt_hash": "645e63f5f341a3f73328fb2aaaa1d5306978e4cb33419c90de07182f188ddb0e",
+  "tools_hash": "5700740ddc78c66acd66579d06844b7aa149c835b6dbcb6f61c5e887cd28b2ef",
+  "provider": "openrouter",
+  "model": "openai/gpt-4o-mini",
+  "system_prompt": "C:\\Users\\Admin\\Desktop\\AITHUCCHIEN\\LABS\\DAY04_2A202601327_OngXuanSon\\starter_v0\\artifacts\\system_prompt.md",
+  "tools": "C:\\Users\\Admin\\Desktop\\AITHUCCHIEN\\LABS\\DAY04_2A202601327_OngXuanSon\\starter_v0\\artifacts\\tools.yaml",
+  "history_window": 5,
+  "max_tool_rounds": 4,
+  "created_at": "2026-07-29T12:48:56",
+  "updated_at": "2026-07-29T12:48:56",
+  "turns": [
+    {
+      "turn_index": 1,
+      "started_at": "2026-07-29T12:48:56",
+      "user": "COn của con bò",
+      "status": "provider_error",
+      "assistant_text": null,
+      "rounds": [],
+      "tool_events": [],
+      "error": "RuntimeError: Missing API key env var: OPENROUTER_API_KEY",
+      "ended_at": "2026-07-29T12:48:56"
+    }
+  ]
+}
