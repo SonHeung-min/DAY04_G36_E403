@@ -87,6 +87,24 @@ tools:
         confirmed: {type: boolean, default: false, description: "Cờ xác nhận"}
       required: [text]
 
+  - name: source_check
+    description: "Check explicit URLs for research/citation/publishing suitability. Use when the user asks whether sources, links, domains, or citations are credible enough. Do not use to summarize page content; use fetch for reading a URL. If no URL is provided, use clarify instead. No side effects; no confirmation required."
+    parameters:
+      type: object
+      properties:
+        urls:
+          type: array
+          default: []
+          description: "Explicit URLs to assess. Preserve each URL exactly as supplied by the user."
+          items: {type: string}
+        purpose:
+          type: string
+          enum: [research, citation, publishing]
+          default: "research"
+          description: "User intent: research for internal review, citation for bibliography/source quality, publishing for external/public content."
+        max_items: {type: integer, default: 5, description: "Maximum URLs to assess; default 5, never invent extra URLs."}
+      required: [urls]
+
   - name: policy
     description: "Tìm trong tài liệu nội bộ."
     parameters:
