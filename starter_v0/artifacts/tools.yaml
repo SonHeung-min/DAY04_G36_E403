@@ -87,23 +87,23 @@ tools:
         confirmed: {type: boolean, default: false, description: "Cờ xác nhận"}
       required: [text]
 
-  - name: source_check
-    description: "Check explicit URLs for research/citation/publishing suitability. Use when the user asks whether sources, links, domains, or citations are credible enough. Do not use to summarize page content; use fetch for reading a URL. If no URL is provided, use clarify instead. No side effects; no confirmation required."
+  - name: claim_check
+    description: "Triage a factual claim before research or fact-checking. Use when the user provides a claim and asks if it is believable, risky, worth verifying, or what evidence is needed. This does not verify the claim; it recommends evidence types and next tools. Do not use for direct web search; use lookup. Do not use to read a URL; use fetch. If the claim is missing, use clarify. No side effects."
     parameters:
       type: object
       properties:
-        urls:
-          type: array
-          default: []
-          description: "Explicit URLs to assess. Preserve each URL exactly as supplied by the user."
-          items: {type: string}
-        purpose:
+        claim: {type: string, default: "", description: "The factual claim to triage. Preserve the user's core wording."}
+        domain:
           type: string
-          enum: [research, citation, publishing]
-          default: "research"
-          description: "User intent: research for internal review, citation for bibliography/source quality, publishing for external/public content."
-        max_items: {type: integer, default: 5, description: "Maximum URLs to assess; default 5, never invent extra URLs."}
-      required: [urls]
+          enum: [auto, current_events, scientific, product, general]
+          default: "auto"
+          description: "Claim domain. Use current_events for recent/news claims, scientific for study/paper claims, product for product/pricing/model claims, otherwise auto."
+        urgency:
+          type: string
+          enum: [low, normal, high]
+          default: "normal"
+          description: "Use high for breaking/urgent/viral claims; otherwise normal."
+      required: [claim]
 
   - name: policy
     description: "Tìm trong tài liệu nội bộ."
